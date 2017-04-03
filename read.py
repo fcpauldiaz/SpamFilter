@@ -12,6 +12,8 @@ class DataClassifier:
       elif typeL == "spam":
        self.countSpam += 1
       self.data.append(line)
+    self.rel1 = self.countSpam/float(self.countSpam + self.countHam)
+    self.rel2 = self.countHam/float(self.countSpam + self.countHam)
 
 
   def separateData(self, process_data, percentage):
@@ -39,13 +41,12 @@ class DataClassifier:
     return preClassifiedData, remaining_data
 
   def getData(self, classifyData, p1, p2, p3):
-    training_data, rem_data = classifyData(classifier.data, p1)
+    training_data, rem_data = classifyData(self.data, p1)
     cross_validation, rem_data = classifyData(rem_data, p2)
     test_data, rem_data = classifyData(rem_data, p3)
     return training_data, cross_validation, test_data
 
 
-classifier = DataClassifier("test_corpus.txt")
-training, cross, test = classifier.getData(classifier.separateData, 0.8, 0.1, 0.1)
-#print rem_data
-print len(training) + len(cross) + len(test) 
+
+
+#4449, 557, 555
