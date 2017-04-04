@@ -12,8 +12,8 @@ class DataClassifier:
       elif typeL == "spam":
        self.countSpam += 1
       self.data.append(line)
-    self.rel1 = self.countSpam/float(self.countSpam + self.countHam)
-    self.rel2 = self.countHam/float(self.countSpam + self.countHam)
+    self.rel1 = float(self.countSpam)/float(self.countSpam + self.countHam)
+    self.rel2 = float(self.countHam)/float(self.countSpam + self.countHam)
 
 
   def separateData(self, process_data, percentage):
@@ -25,6 +25,7 @@ class DataClassifier:
     for line in process_data: 
       index = line.index('\t')
       typeL = line[:index]
+      line = self.parseFile(line)
       if typeL == "ham":
         if (cantHam < (int)(round(self.countHam*percentage))):
           preClassifiedData.append(line)
@@ -38,14 +39,30 @@ class DataClassifier:
       if (inserterted == False):
         remaining_data.append(line)
       inserterted = False
-    return preClassifiedData, remaining_data
+    return preClassifiedData, remaining_data, cantHam, cantSpam
 
   def getData(self, classifyData, p1, p2, p3):
-    training_data, rem_data = classifyData(self.data, p1)
-    cross_validation, rem_data = classifyData(rem_data, p2)
-    test_data, rem_data = classifyData(rem_data, p3)
-    return training_data, cross_validation, test_data
+    training_data, rem_data, countHam1, countSpam2 = classifyData(self.data, p1)
+    cross_validation, rem_data,  countHam3, countSpam4 = classifyData(rem_data, p2)
+    test_data, rem_data, countHam5, countSpam6 = classifyData(rem_data, p3)
+    return [training_data, countHam1, countSpam2] , [cross_validation,  countHam3, countSpam4], [test_data,  countHam5, countSpam6]
 
+  def parseFile(self, line):
+    line = line.replace(".", "")
+    line = line.replace("!", "")
+    line = line.replace("?", "")
+    line = line.replace(";", "")
+    line = line.replace(":", "")
+    line = line.replace(">", "")
+    line = line.replace(",", "")
+    line = line.replace("-", "")
+    return line
+  def parseArray(self, array):
+    newData = []
+    for data in array:
+      line  = self.parseFile(data)
+      newData.append(line)
+    return newData
 
 
 
